@@ -5,42 +5,50 @@ public class loggBokController {
     private loggBokView view;
     private loggBokModel model;
 
-    public loggBokController() {
+    public loggBokController() throws IOException, ClassNotFoundException {
         view = new loggBokView();
         model = new loggBokModel();
 
-        JFrame frame = new JFrame("Encryption program (SHHHH DONT TELL)");
+        JFrame frame = new JFrame("Logg Bok");
         frame.setContentPane(view.getPanel());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
 
-        /*
-        view.getSaveButton().addActionListener(actionEvent -> model.Save(view.getTextArea1(), view.getFilename()) );
-        view.getSaveAsButton().addActionListener(actionEvent -> model.SaveAs(view.getTextArea1(), view.chooseNewFilename()));
-        view.getLoadFileButton().addActionListener(actionEvent -> view.setResult(model.Load(view.chooseNewFilename())));
+        view.loadloggs(model.loadloggs());
 
-        view.getEncryptFileButton().addActionListener(actionEvent -> {
+
+
+
+        view.getSaveButton().addActionListener(actionEvent -> {
             try {
-                model.EncryptFile(view.chooseFilename(),view.getKey());
+                model.Save(model.getloggs());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-        view.getEncryptFileWithFileButton().addActionListener(actionEvent -> {
-            try {
-                model.EncryptFile(view.chooseFilename(),model.getFile(view.chooseFilename()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        view.getUpdateButton().addActionListener(actionEvent -> update());
 
-        view.getEncryptButton().addActionListener(actionEvent -> view.setResult(model.Encrypt(view.getTextArea1(), view.getKey())));
-        view.getEncryptWithFileButton().addActionListener(actionEvent -> view.setResult(model.Encrypt(view.getTextArea1(), model.getFile(view.chooseFilename()))));
-         */
+        view.getNewButton().addActionListener(actionEvent -> NewLogg());
+        view.getViewButton().addActionListener(actionEvent -> view.setText(model.getMessage(view.getListIndex())));
+
+
+
     }
 
-    public static void main(String[] args) {
+    private void update() {
+        model.update(view.getListIndex(), view.getTextArea1().getText());
+        view.loadloggs(model.getloggs());
+    }
+
+    private void NewLogg() {
+        model.newLogg();
+        view.loadloggs(model.getloggs());
+        view.setText(model.getMessage(model.getloggs().size()-1));
+    }
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         loggBokController controller = new loggBokController();
     }
 }
+
